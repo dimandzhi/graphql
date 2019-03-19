@@ -45,13 +45,11 @@ func Do(p Params) *Result {
 		}
 	}
 	validationResult := ValidateDocument(&p.Schema, AST, nil)
-
 	if !validationResult.IsValid {
 		return &Result{
 			Errors: validationResult.Errors,
 		}
 	}
-
 	return Execute(ExecuteParams{
 		Schema:        p.Schema,
 		Root:          p.RootObject,

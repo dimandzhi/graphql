@@ -1736,6 +1736,10 @@ func isValidLiteralValue(ttype Input, valueAST ast.Value) (bool, []string) {
 			return true, nil
 		}
 	}
+
+	if valueAST.GetValue() == nil {
+		return true, nil
+	}
 	switch ttype := ttype.(type) {
 	case *NonNull:
 		// A value must be provided if the type is non-null.
@@ -1796,10 +1800,6 @@ func isValidLiteralValue(ttype Input, valueAST ast.Value) (bool, []string) {
 			}
 		}
 		return (len(messagesReduce) == 0), messagesReduce
-	case *Scalar:
-		if isNullish(ttype.ParseLiteral(valueAST)) {
-			return false, []string{fmt.Sprintf(`Expected type "%v", found %v.`, ttype.Name(), printer.Print(valueAST))}
-		}
 	case *Enum:
 		if isNullish(ttype.ParseLiteral(valueAST)) {
 			return false, []string{fmt.Sprintf(`Expected type "%v", found %v.`, ttype.Name(), printer.Print(valueAST))}
