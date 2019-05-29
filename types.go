@@ -1,8 +1,6 @@
 package graphql
 
 import (
-	"sync"
-
 	"github.com/dimandzhi/graphql/gqlerrors"
 )
 
