@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/graphql-go/graphql"
+	"github.com/dimandzhi/graphql"
 	"github.com/graphql-go/handler"
 	"math/rand"
 	"net/http"
@@ -9,8 +9,8 @@ import (
 )
 
 type Product struct {
-	ID    int64   `json:"id"`
-	Name  string  `json:"name"`
+	ID    int64            `json:"id"`
+	Name  string           `json:"name"`
 	Info  graphql.Nullable `json:"info,omitempty"`
 	Price graphql.Nullable `json:"price"`
 }
@@ -149,14 +149,13 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 				price, priceOk := params.Args["price"].(float64)
 				_, priceNull := params.Args["price"].(graphql.NullValue)
 
-
 				product := Product{}
 				for i, p := range products {
 					if int64(id) == p.ID {
 						if nameOk {
 							products[i].Name = name
 						}
-						if infoOk{
+						if infoOk {
 							products[i].Info = info
 						}
 						if priceOk || priceNull {
@@ -223,8 +222,8 @@ func main() {
 	initProductsData(&products)
 
 	h := handler.New(&handler.Config{
-		Schema: &schema,
-		Pretty: true,
+		Schema:   &schema,
+		Pretty:   true,
 		GraphiQL: true,
 	})
 
