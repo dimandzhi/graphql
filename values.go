@@ -353,7 +353,8 @@ func valueFromAST(valueAST ast.Value, ttype Input, variables map[string]interfac
 		return nil
 	}
 	// precedence: value > type
-	if valueAST, ok := valueAST.(*ast.Variable); ok {
+	switch valueAST := valueAST.(type) {
+	case *ast.Variable:
 		if valueAST.Name == nil || variables == nil {
 			return nil
 		}
@@ -361,6 +362,8 @@ func valueFromAST(valueAST ast.Value, ttype Input, variables map[string]interfac
 		// assuming that this query has been validated and the variable usage here
 		// is of the correct type.
 		return variables[valueAST.Name.Value]
+	case *ast.NullValue:
+		return valueAST
 	}
 	switch ttype := ttype.(type) {
 	case *NonNull:

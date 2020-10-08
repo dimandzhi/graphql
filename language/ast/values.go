@@ -181,7 +181,6 @@ type NullValue struct {
 }
 
 func NewNullValue(v *NullValue) *NullValue {
-
 	return &NullValue{
 		Kind:  kinds.NullValue,
 		Loc:   v.Loc,
@@ -198,7 +197,7 @@ func (v *NullValue) GetLoc() *Location {
 }
 
 func (v *NullValue) GetValue() interface{} {
-	return nil
+	return v.Value
 }
 
 // EnumValue implements Node, Value
