@@ -57,7 +57,7 @@ func main() {
 		log.Fatalf("failed to execute graphql operation, errors: %+v", r.Errors)
 	}
 	rJSON, _ := json.Marshal(r)
-	fmt.Printf("%s \n", rJSON) // {“data”:{“hello”:”world”}}
+	fmt.Printf("%s \n", rJSON) // {"data":{"hello":"world"}}
 }
 ```
 For more complex examples, refer to the [examples/](https://github.com/dimandzhi/graphql/tree/master/examples/) directory and [graphql_test.go](https://github.com/dimandzhi/graphql/blob/master/graphql_test.go).
@@ -71,5 +71,5 @@ For more complex examples, refer to the [examples/](https://github.com/dimandzhi
 | [dataloader](https://github.com/nicksrandall/dataloader) | [Nick Randall](https://github.com/nicksrandall) | [DataLoader](https://github.com/facebook/dataloader) implementation in Go. |
 
 ### Blog Posts
-- [Golang + GraphQL + Relay](http://wehavefaces.net/)
+- [Golang + GraphQL + Relay](https://wehavefaces.net/learn-golang-graphql-relay-1-e59ea174a902)
 
