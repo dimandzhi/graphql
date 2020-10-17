@@ -131,7 +131,12 @@ func getVariableValue(schema Schema, definitionAST *ast.VariableDefinition, inpu
 
 // Given a type and any value, return a runtime value coerced to match the type.
 func coerceValue(ttype Input, value interface{}) interface{} {
-	if isNullish(value) {
+	if ttype, isENUM := ttype.(*Enum); isENUM {
+		if parsed := ttype.ParseValue(value); !isNullish(parsed) {
+			return parsed
+		}
+		return new(sql.NullString)
+	} else if isNullish(value) {
 		return nil
 	}
 	switch ttype := ttype.(type) {
@@ -170,9 +175,7 @@ func coerceValue(ttype Input, value interface{}) interface{} {
 			return parsed
 		}
 	case *Enum:
-		if parsed := ttype.ParseValue(value); !isNullish(parsed) {
-			return parsed
-		}
+		// already handeled
 	}
 
 	return nil
