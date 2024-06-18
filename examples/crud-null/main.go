@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/dimandzhi/graphql"
-	"github.com/graphql-go/handler"
 	"math/rand"
 	"net/http"
 	"time"
+
+	"github.com/dimandzhi/graphql"
+	"github.com/dimandzhi/handler"
 )
 
 type Product struct {

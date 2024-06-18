@@ -1,4 +1,2 @@
-github.com/graphql-go/graphql v0.8.1 h1:p7/Ou/WpmulocJeEx7wjQy611rtXGQaAcXGqanuMMgc=
-github.com/graphql-go/graphql v0.8.1/go.mod h1:nKiHzRM0qopJEwCITUuIsxk9PlVlwIiiI8pnJEhordQ=
-github.com/graphql-go/handler v0.2.4 h1:gz9q11TUHPNUpqzV8LMa+rkqM5NUuH/nkE3oF2LS3rI=
-github.com/graphql-go/handler v0.2.4/go.mod h1:gsQlb4gDvURR0bgN8vWQEh+s5vJALM2lYL3n3cf6OxQ=
+github.com/dimandzhi/handler v0.2.4 h1:dkCmBKgJ9DvhOAqgUp258hrIZU4TDM2nIj7vaJxbXFU=
+github.com/dimandzhi/handler v0.2.4/go.mod h1:2DFAk3y1PYQ4Q3i0m2CUAHQ8J4GhEjZgWrvR1WzUMZ4=
