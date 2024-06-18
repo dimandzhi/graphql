@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"sort"
 	"strings"
 
 	"github.com/dimandzhi/graphql/gqlerrors"
@@ -254,7 +255,9 @@ func executeFieldsSerially(p executeFieldsParams) *Result {
 	}
 
 	finalResults := make(map[string]interface{}, len(p.Fields))
-	for responseName, fieldASTs := range p.Fields {
+	for _, orderedField := range orderedFields(p.Fields) {
+		responseName := orderedField.responseName
+		fieldASTs := orderedField.fieldASTs
 		fieldPath := p.Path.WithKey(responseName)
 		resolved, state := resolveField(p.ExecutionContext, p.ParentType, p.Source, fieldASTs, fieldPath)
 		if state.hasNoFieldDefs {
@@ -650,13 +653,13 @@ func resolveField(eCtx *executionContext, parentType *Object, source interface{}
 		Context: eCtx.Context,
 	})
 
-	if resolveFnError != nil {
-		panic(resolveFnError)
-	}
-
 	extErrs = resolveFieldFinishFn(result, resolveFnError)
 	if len(extErrs) != 0 {
 		eCtx.Errors = append(eCtx.Errors, extErrs...)
+	}
+
+	if resolveFnError != nil {
+		panic(resolveFnError)
 	}
 
 	completed := completeValueCatchingError(eCtx, returnType, fieldASTs, info, path, result)
@@ -797,10 +800,8 @@ func completeAbstractValue(eCtx *executionContext, returnType Abstract, fieldAST
 		runtimeType = defaultResolveTypeFn(resolveTypeParams, returnType)
 	}
 
-	err := invariant(runtimeType != nil,
-		fmt.Sprintf(`Abstract type %v must resolve to an Object type at runtime `+
-			`for field %v.%v with value "%v", received "%v".`,
-			returnType, info.ParentType, info.FieldName, result, runtimeType),
+	err := invariantf(runtimeType != nil, `Abstract type %v must resolve to an Object type at runtime `+
+		`for field %v.%v with value "%v", received "%v".`, returnType, info.ParentType, info.FieldName, result, runtimeType,
 	)
 	if err != nil {
 		panic(err)
@@ -1037,4 +1038,40 @@ func getFieldDef(schema Schema, parentType *Object, fieldName string) *FieldDefi
 		return TypeNameMetaFieldDef
 	}
 	return parentType.Fields()[fieldName]
+}
+
+// contains field information that will be placed in an ordered slice
+type orderedField struct {
+	responseName string
+	fieldASTs    []*ast.Field
+}
+
+// orders fields from a fields map by location in the source
+func orderedFields(fields map[string][]*ast.Field) []*orderedField {
+	orderedFields := []*orderedField{}
+	fieldMap := map[int]*orderedField{}
+	startLocs := []int{}
+
+	for responseName, fieldASTs := range fields {
+		// find the lowest location in the current fieldASTs
+		lowest := -1
+		for _, fieldAST := range fieldASTs {
+			loc := fieldAST.GetLoc().Start
+			if lowest == -1 || loc < lowest {
+				lowest = loc
+			}
+		}
+		startLocs = append(startLocs, lowest)
+		fieldMap[lowest] = &orderedField{
+			responseName: responseName,
+			fieldASTs:    fieldASTs,
+		}
+	}
+
+	sort.Ints(startLocs)
+	for _, startLoc := range startLocs {
+		orderedFields = append(orderedFields, fieldMap[startLoc])
+	}
+
+	return orderedFields
 }
