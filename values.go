@@ -163,16 +163,13 @@ func coerceValue(ttype Input, value interface{}) interface{} {
 
 		for name, field := range ttype.Fields() {
 			value, isSet := valueMap[name]
-			if !isSet {
-				continue
-			}
 			fieldValue := coerceValue(field.Type, value)
 			if isNullish(fieldValue) {
 				fieldValue = field.DefaultValue
 			}
 			if !isNullish(fieldValue) {
 				_, isEnum := field.Type.(*Enum)
-				if isEnum && !isSet && value == nil {
+				if isEnum && !isSet {
 					continue
 				}
 				obj[name] = fieldValue
