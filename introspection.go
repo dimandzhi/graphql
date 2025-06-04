@@ -262,12 +262,18 @@ func init() {
 						if isNullish(inputVal.DefaultValue) {
 							return nil, nil
 						}
+						if stringVal, isString := inputVal.DefaultValue.(*ast.StringValue); isString {
+							return stringVal.GetValue(), nil
+						}
 						astVal := astFromValue(inputVal.DefaultValue, inputVal)
 						return printer.Print(astVal), nil
 					}
 					if inputVal, ok := p.Source.(*InputObjectField); ok {
 						if inputVal.DefaultValue == nil {
 							return nil, nil
+						}
+						if stringVal, isString := inputVal.DefaultValue.(*ast.StringValue); isString {
+							return stringVal.GetValue(), nil
 						}
 						astVal := astFromValue(inputVal.DefaultValue, inputVal)
 						return printer.Print(astVal), nil
